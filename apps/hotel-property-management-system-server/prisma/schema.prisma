@@ -1,0 +1,93 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Reservation {
+  checkInDate  DateTime?
+  checkOutDate DateTime?
+  createdAt    DateTime               @default(now())
+  guest        Guest?                 @relation(fields: [guestId], references: [id])
+  guestId      String?                @db.ObjectId
+  id           String                 @id @default(auto()) @map("_id") @db.ObjectId
+  roomNumber   Int?
+  status       EnumReservationStatus?
+  updatedAt    DateTime               @updatedAt
+}
+
+model Guest {
+  createdAt     DateTime      @default(now())
+  email         String?
+  firstName     String?
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  lastName      String?
+  loyaltyPoints Int?
+  phone         String?
+  reservations  Reservation[]
+  updatedAt     DateTime      @updatedAt
+}
+
+model Staff {
+  createdAt DateTime       @default(now())
+  email     String?
+  firstName String?
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  lastName  String?
+  phone     String?
+  role      EnumStaffRole?
+  updatedAt DateTime       @updatedAt
+}
+
+model Room {
+  createdAt  DateTime          @default(now())
+  id         String            @id @default(auto()) @map("_id") @db.ObjectId
+  roomNumber String?
+  roomType   EnumRoomRoomType?
+  status     EnumRoomStatus?
+  updatedAt  DateTime          @updatedAt
+}
+
+model Housekeeping {
+  createdAt  DateTime                @default(now())
+  date       DateTime?
+  id         String                  @id @default(auto()) @map("_id") @db.ObjectId
+  roomNumber Int?
+  status     EnumHousekeepingStatus?
+  updatedAt  DateTime                @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumReservationStatus {
+  Option1
+}
+
+enum EnumStaffRole {
+  Option1
+}
+
+enum EnumRoomRoomType {
+  Option1
+}
+
+enum EnumRoomStatus {
+  Option1
+}
+
+enum EnumHousekeepingStatus {
+  Option1
+}
